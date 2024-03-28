@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: create options table
+      author: Mari
+      changes:
+        - createTable:
+            preConditions:
+              onFail: MARK_RAN
+              not:
+                tableExists:
+                  tableName: options
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: question_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_correct
+                  type: boolean
+        - addForeignKeyConstraint:
+            baseTableName: options
+            baseColumnNames: question_id
+            constraintName: fk_question_id
+            referencedTableName: questions
+            referencedColumnNames: id
+            onDelete: CASCADE

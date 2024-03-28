@@ -1,0 +1,29 @@
+#databaseChangeLog:
+#  - includeAll:
+#      path: /db_liquid/changelog/initial/
+
+#databaseChangeLog: #not working?
+#  - include file: /db_liquid/changelog/initial/27-03-2024--01-quizzes_table.yaml
+
+# create
+databaseChangeLog:
+  - include:
+      file: /db_liquid/changelog/initial/27-03-2024--01-create_user_table.yaml
+  - include:
+      file: /db_liquid/changelog/initial/27-03-2024--01-quizzes_table.yaml
+  - include:
+      file: /db_liquid/changelog/initial/26-03-2024--01-create_questions_table.yaml
+  - include:
+      file: /db_liquid/changelog/initial/26-03-2024--01-create_quiz_results_table.yaml
+  - include:
+      file: /db_liquid/changelog/initial/26-03-2024--01-create_options.yaml
+
+##insert
+#  - include:
+#      file: /db_liquid/changelog/initial/inserts/003_insert_movies.sql
+#  - include:
+#      file: /db_liquid/changelog/initial/inserts/26-03-2024--03-insert_users.sql
+#  - include:
+#      file: /db_liquid/changelog/initial/inserts/26-03-2024--02-insert_authorities.sql
+#  - include:
+ #     file: /db_liquid/changelog/initial/inserts/26-03-2024--02-insert_user_authority.sql

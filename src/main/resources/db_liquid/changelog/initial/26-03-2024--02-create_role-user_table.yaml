@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: Create table USER_AUTHORITY
+      author: Mari
+      changes:
+        - createTable:
+            tableName: user_authority
+            columns:
+              - column:
+                  name: user_email
+                  type: varchar(45)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: authority_id
+                  type: long
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_authority_id
+                    references: authorities(id)
+        - addForeignKeyConstraint:
+            baseTableName: user_authority
+            baseColumnNames: user_email
+            constraintName: fk_user_email
+            referencedTableName: user_table
+            referencedColumnNames: email
+            onDelete: CASCADE

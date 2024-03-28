@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: create questions table
+      author: Mari
+      changes:
+        - createTable:
+            preConditions:
+              onFail: MARK_RAN
+              not:
+                tableExists:
+                  tableName: questions
+            tableName: questions
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: quiz_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: question_text
+                  type: varchar(255)
+        - addForeignKeyConstraint:
+            baseTableName: questions
+            baseColumnNames: quiz_id
+            constraintName: fk_quiz_id
+            referencedTableName: quizzes
+            referencedColumnNames: id
+            onDelete: CASCADE

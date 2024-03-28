@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: create users table
+      author: Mari
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            tableExists:
+              tableName: users
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                 name: id
+                 type: long
+                 autoIncrement: true
+                 constraints:
+                   primaryKey: true
+                   nullable: false
+              - column:
+                  name: name
+                  type: varchar(45)
+              - column:
+                  name: email
+                  type: varchar(45)
+              - column:
+                  name: password
+                  type: varchar(100)
+

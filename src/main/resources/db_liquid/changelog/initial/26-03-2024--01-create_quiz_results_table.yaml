@@ -1,0 +1,44 @@
+databaseChangeLog:
+  - changeSet:
+      id: create quiz_results table
+      author: Mari
+      changes:
+        - createTable:
+            preConditions:
+              onFail: MARK_RAN
+              not:
+                tableExists:
+                  tableName: quiz_results
+            tableName: questions
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: quiz_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: quiz_results
+            baseColumnNames: user_id
+            constraintName: fk_user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: quiz_results
+            baseColumnNames: quiz_id
+            constraintName: fk_quiz_id
+            referencedTableName: quizzes
+            referencedColumnNames: id
+            onDelete: CASCADE
