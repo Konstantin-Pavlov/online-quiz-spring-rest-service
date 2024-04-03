@@ -2,13 +2,18 @@ databaseChangeLog:
   - changeSet:
       id: Create table USER_AUTHORITY
       author: Mari
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            tableExists:
+              tableName: user_authority
       changes:
         - createTable:
             tableName: user_authority
             columns:
               - column:
-                  name: user_email
-                  type: varchar(45)
+                  name: user_id
+                  type: long
                   constraints:
                     nullable: false
               - column:
@@ -20,8 +25,8 @@ databaseChangeLog:
                     references: authorities(id)
         - addForeignKeyConstraint:
             baseTableName: user_authority
-            baseColumnNames: user_email
-            constraintName: fk_user_email
-            referencedTableName: user_table
-            referencedColumnNames: email
+            baseColumnNames: user_id
+            constraintName: for_key_user_id
+            referencedTableName: users
+            referencedColumnNames: id
             onDelete: CASCADE

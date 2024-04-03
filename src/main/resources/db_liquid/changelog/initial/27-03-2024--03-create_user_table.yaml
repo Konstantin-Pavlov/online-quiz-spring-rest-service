@@ -27,4 +27,9 @@ databaseChangeLog:
               - column:
                   name: password
                   type: varchar(100)
+              - column:
+                  name: enabled
+                  type: boolean
+                  constraints:
+                    nullable: false
 

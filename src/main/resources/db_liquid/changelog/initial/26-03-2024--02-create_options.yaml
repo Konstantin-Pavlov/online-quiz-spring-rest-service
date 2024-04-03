@@ -24,6 +24,9 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: option_text
+                  type: varchar(255)
+              - column:
                   name: is_correct
                   type: boolean
         - addForeignKeyConstraint:

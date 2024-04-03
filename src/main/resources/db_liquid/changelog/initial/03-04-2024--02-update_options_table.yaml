@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: update options table - rename column is_correct to correct
+      author: Mari
+      changes:
+        - addColumn:
+            tableName: options
+            columns:
+              - column:
+                  name: correct
+                  type: boolean
+        - sql:
+            sql: UPDATE options SET correct = is_correct
+        - dropColumn:
+            tableName: options
+            columnName: is_correct
+

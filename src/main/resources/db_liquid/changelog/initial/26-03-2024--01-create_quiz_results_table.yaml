@@ -9,7 +9,7 @@ databaseChangeLog:
               not:
                 tableExists:
                   tableName: quiz_results
-            tableName: questions
+            tableName: quiz_results
             columns:
               - column:
                   name: id
@@ -38,7 +38,7 @@ databaseChangeLog:
         - addForeignKeyConstraint:
             baseTableName: quiz_results
             baseColumnNames: quiz_id
-            constraintName: fk_quiz_id
+            constraintName: for_key_quiz_id
             referencedTableName: quizzes
             referencedColumnNames: id
             onDelete: CASCADE
