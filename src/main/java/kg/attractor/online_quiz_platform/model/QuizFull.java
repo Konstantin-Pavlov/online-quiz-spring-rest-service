@@ -1,7 +1,6 @@
 package kg.attractor.online_quiz_platform.model;
 
 import kg.attractor.online_quiz_platform.dto.QuestionFullDto;
-import kg.attractor.online_quiz_platform.dto.QuizFullDto;
 import lombok.Getter;
 import lombok.Setter;
 
