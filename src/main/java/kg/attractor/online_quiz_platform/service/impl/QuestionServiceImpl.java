@@ -1,11 +1,8 @@
 package kg.attractor.online_quiz_platform.service.impl;
 
 import kg.attractor.online_quiz_platform.dao.QuestionDao;
-import kg.attractor.online_quiz_platform.dao.QuestionFullDao;
-import kg.attractor.online_quiz_platform.dto.QuestionDto;
-import kg.attractor.online_quiz_platform.dto.QuestionFullDto;
-import kg.attractor.online_quiz_platform.model.Question;
-import kg.attractor.online_quiz_platform.model.QuestionFull;
+import kg.attractor.online_quiz_platform.dto.Question;
+import kg.attractor.online_quiz_platform.model.QuestionWithOptions;
 import kg.attractor.online_quiz_platform.service.OptionService;
 import kg.attractor.online_quiz_platform.service.QuestionService;
 import lombok.RequiredArgsConstructor;
@@ -20,15 +17,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
     private final QuestionDao questionDao;
-    private final QuestionFullDao questionFullDao;
     private final OptionService optionService;
 
     @Override
-    public List<QuestionDto> getQuestions() {
-        List<Question> questions = questionDao.getQuestions();
-        List<QuestionDto> dtos = new ArrayList<>();
+    public List<Question> getQuestions() {
+        List<kg.attractor.online_quiz_platform.model.Question> questions = questionDao.getQuestions();
+        List<Question> dtos = new ArrayList<>();
         questions.forEach(question ->
-                dtos.add(QuestionDto.builder()
+                dtos.add(Question.builder()
                         .id(question.getId())
                         .quizId(question.getQuizId())
                         .questionText(question.getQuestionText())
@@ -39,15 +35,15 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<QuestionFullDto> getFUllQuestionsByQuizId(long id) {
-        List<QuestionFull> fullQuestions = questionFullDao.getFullQuestionsByQuizId(id);
-        List<QuestionFullDto> dtos = new ArrayList<>();
-        fullQuestions.forEach(questionFull ->
-                dtos.add(QuestionFullDto.builder()
-                        .id(questionFull.getId())
-                        .quizId(questionFull.getQuizId())
-                        .questionText(questionFull.getQuestionText())
-                        .options(optionService.getOptionsByQuestionId(questionFull.getId()))
+    public List<Question> getFUllQuestionsByQuizId(long id) {
+        List<QuestionWithOptions> fullQuestions = questionDao.getFullQuestionsByQuizId(id);
+        List<Question> dtos = new ArrayList<>();
+        fullQuestions.forEach(questionWithOptions ->
+                dtos.add(Question.builder()
+                        .id(questionWithOptions.getId())
+                        .quizId(questionWithOptions.getQuizId())
+                        .questionText(questionWithOptions.getQuestionText())
+                        .options(optionService.getOptionsByQuestionId(questionWithOptions.getId()))
                         .build()
                 )
         );
@@ -55,8 +51,8 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public void createQuestion(QuestionDto question) {
+    public void createQuestion(Question question) {
         questionDao.createQuestion(question);
-        log.info("added question with quiz id " + question.getQuizId());
+        log.info("added question with quiz id {}", question.getQuizId());
     }
 }

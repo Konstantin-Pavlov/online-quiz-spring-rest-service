@@ -1,6 +1,6 @@
 package kg.attractor.online_quiz_platform.service.impl;
 
-import kg.attractor.online_quiz_platform.dao.optionDao;
+import kg.attractor.online_quiz_platform.dao.OptionDao;
 import kg.attractor.online_quiz_platform.dto.OptionDto;
 import kg.attractor.online_quiz_platform.model.Option;
 import kg.attractor.online_quiz_platform.service.OptionService;
@@ -15,7 +15,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class OptionServiceImpl implements OptionService {
-    private final optionDao optionDao;
+    private final OptionDao optionDao;
 
     @Override
     public List<OptionDto> getOptionsByQuestionId(long id) {

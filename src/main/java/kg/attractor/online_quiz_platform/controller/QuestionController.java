@@ -1,7 +1,7 @@
 package kg.attractor.online_quiz_platform.controller;
 
 import jakarta.validation.Valid;
-import kg.attractor.online_quiz_platform.dto.QuestionDto;
+import kg.attractor.online_quiz_platform.dto.Question;
 import kg.attractor.online_quiz_platform.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,12 +23,12 @@ public class QuestionController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<QuestionDto>> getQuestions() {
+    public ResponseEntity<List<Question>> getQuestions() {
         return ResponseEntity.ok(questionService.getQuestions());
     }
 
     @PostMapping("add")
-    public ResponseEntity<String> createQuestion(@RequestBody @Valid QuestionDto question) {
+    public ResponseEntity<String> createQuestion(@RequestBody @Valid Question question) {
         questionService.createQuestion(question);
         return ResponseEntity.status(HttpStatus.OK).body(String.format("Question '%s' added successfully", question.getQuestionText()));
     }

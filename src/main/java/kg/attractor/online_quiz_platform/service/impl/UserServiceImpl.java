@@ -54,6 +54,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void createUser(UserDto user) {
         userDao.createUser(user);
-        log.info("added user with email " + user.getEmail());
+        log.info("added user with email {}", user.getEmail());
     }
 }

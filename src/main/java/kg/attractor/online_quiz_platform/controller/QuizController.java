@@ -2,7 +2,6 @@ package kg.attractor.online_quiz_platform.controller;
 
 import jakarta.validation.Valid;
 import kg.attractor.online_quiz_platform.dto.QuizDto;
-import kg.attractor.online_quiz_platform.dto.QuizFullDto;
 import kg.attractor.online_quiz_platform.service.QuizService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,19 +26,14 @@ public class QuizController {
 //    }
 
     @GetMapping
-    public ResponseEntity<List<QuizFullDto>> getQuizzes() {
-        return ResponseEntity.ok(quizService.getFullQuizzes());
+    public ResponseEntity<List<QuizDto>> getQuizzes() {
+        return ResponseEntity.ok(quizService.getQuizzes());
     }
+
 
     @PostMapping("add")
-    public ResponseEntity<String> createQuiz(@RequestBody @Valid QuizDto quiz) {
-        quizService.createQuiz(quiz);
-        return ResponseEntity.status(HttpStatus.OK).body(String.format("Quiz %s added successfully", quiz.getTitle()));
-    }
-
-    @PostMapping("add-full")
-    public ResponseEntity<String> createFullQuiz(@RequestBody @Valid QuizFullDto quiz) {
-        quizService.createQuizFull(quiz);
+    public ResponseEntity<String> createFullQuiz(@RequestBody @Valid QuizDto quiz) {
+        quizService.saveQuiz(quiz);
         return ResponseEntity.status(HttpStatus.OK).body(String.format("Quiz %s added successfully", quiz.getTitle()));
     }
 }

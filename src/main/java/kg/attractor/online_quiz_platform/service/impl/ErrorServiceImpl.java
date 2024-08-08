@@ -1,7 +1,9 @@
 package kg.attractor.online_quiz_platform.service.impl;
 
 
+import kg.attractor.online_quiz_platform.exception.EmailAlreadyExistsException;
 import kg.attractor.online_quiz_platform.exception.ErrorResponseBody;
+import kg.attractor.online_quiz_platform.exception.QuizAlreadyExistsException;
 import kg.attractor.online_quiz_platform.service.ErrorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,11 +23,23 @@ public class ErrorServiceImpl implements ErrorService {
 
     @Override
     public ErrorResponseBody makeResponse(Exception exception) {
-        String message = exception.getMessage();
-        log.error(Arrays.toString(exception.getStackTrace()));
+        log.error(exception.getMessage());
+        if (exception instanceof QuizAlreadyExistsException) {
+            return ErrorResponseBody.builder()
+                    .title("Quiz Already Exists")
+                    .reasons(Map.of("error", List.of(exception.getMessage())))
+                    .build();
+        }
+        if (exception instanceof EmailAlreadyExistsException) {
+            return ErrorResponseBody.builder()
+                    .title("Email Already Exists")
+                    .reasons(Map.of("error", List.of(exception.getMessage())))
+                    .build();
+        }
+        // Handle other exceptions as needed
         return ErrorResponseBody.builder()
-                .title(message)
-                .reasons(Map.of("errors", List.of(message)))
+                .title("Error")
+                .reasons(Map.of("error", List.of(exception.getMessage())))
                 .build();
     }
 
@@ -37,7 +50,7 @@ public class ErrorServiceImpl implements ErrorService {
         exception.getFieldErrors().stream()
                 .filter(e -> e.getDefaultMessage() != null)
                 .forEach(e -> {
-                    log.error(e.getField() + ": " + e.getDefaultMessage());
+                    log.error("{}: {}", e.getField(), e.getDefaultMessage());
                     List<String> errors = new ArrayList<>();
                     errors.add(e.getDefaultMessage());
                     if (!reasons.containsKey(e.getField())) {
@@ -51,4 +64,5 @@ public class ErrorServiceImpl implements ErrorService {
                 .reasons(reasons)
                 .build();
     }
+
 }

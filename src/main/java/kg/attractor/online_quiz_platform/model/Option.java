@@ -9,7 +9,6 @@ public class Option {
     private Long id;
     private Long questionId;
     private String optionText;
-//    @JsonProperty("is_correct")
     private boolean correct;
 }
 
