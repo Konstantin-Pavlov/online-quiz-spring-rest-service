@@ -27,7 +27,7 @@ public class SecurityConfig {
 
     private final DataSource dataSource;
 
-    private final PasswordEncoder encoder;
+//    private final PasswordEncoder encoder;
 
 
 //    @Bean
