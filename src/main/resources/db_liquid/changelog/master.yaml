@@ -3,7 +3,7 @@ databaseChangeLog:
   - include:
       file: /db_liquid/changelog/initial/27-03-2024--03-create_user_table.yaml
   - include:
-      file: /db_liquid/changelog/initial/27-03-2024--01-quizzes_table.yaml
+      file: /db_liquid/changelog/initial/27-03-2024--01-create_quizzes_table.yaml
   - include:
       file: /db_liquid/changelog/initial/26-03-2024--01-create_questions_table.yaml
   - include:
@@ -16,8 +16,8 @@ databaseChangeLog:
       file: /db_liquid/changelog/initial/26-03-2024--02-create_role-user_table.yaml
 
 # updates
-  - include:
-      file: /db_liquid/changelog/initial/03-04-2024--02-update_options_table.yaml
+#  - include:
+#      file: /db_liquid/changelog/initial/03-04-2024--02-update_options_table.yaml
 
 # inserts
   - include:
