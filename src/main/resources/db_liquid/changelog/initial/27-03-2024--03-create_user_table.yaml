@@ -12,18 +12,20 @@ databaseChangeLog:
             tableName: users
             columns:
               - column:
-                 name: id
-                 type: long
-                 autoIncrement: true
-                 constraints:
-                   primaryKey: true
-                   nullable: false
+                  name: id
+                  type: long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
               - column:
                   name: name
                   type: varchar(45)
               - column:
                   name: email
                   type: varchar(45)
+                  constraints:
+                    unique: true
               - column:
                   name: password
                   type: varchar(100)
