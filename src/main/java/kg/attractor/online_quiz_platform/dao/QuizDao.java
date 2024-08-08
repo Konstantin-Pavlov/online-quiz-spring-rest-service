@@ -24,7 +24,7 @@ import java.util.Optional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class QuizFullDao {
+public class QuizDao {
     private final JdbcTemplate template;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 

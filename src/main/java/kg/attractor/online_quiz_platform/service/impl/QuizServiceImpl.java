@@ -1,6 +1,6 @@
 package kg.attractor.online_quiz_platform.service.impl;
 
-import kg.attractor.online_quiz_platform.dao.QuizFullDao;
+import kg.attractor.online_quiz_platform.dao.QuizDao;
 import kg.attractor.online_quiz_platform.dto.QuizDto;
 import kg.attractor.online_quiz_platform.model.Quiz;
 import kg.attractor.online_quiz_platform.service.QuestionService;
@@ -17,13 +17,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class QuizServiceImpl implements QuizService {
 
-    private final QuizFullDao quizFullDao;
+    private final QuizDao quizDao;
     private final QuestionService questionService;
 
 
     @Override
     public List<QuizDto> getQuizzes() {
-        List<Quiz> quizzes = quizFullDao.getFullQuizzes();
+        List<Quiz> quizzes = quizDao.getFullQuizzes();
         List<QuizDto> quizDtos = new ArrayList<>();
         quizzes.forEach(quiz ->
                 quizDtos.add(QuizDto.builder()
@@ -40,6 +40,6 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public void saveQuiz(QuizDto quiz) {
-        quizFullDao.saveQuiz(quiz);
+        quizDao.saveQuiz(quiz);
     }
 }
