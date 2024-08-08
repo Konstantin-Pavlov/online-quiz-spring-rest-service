@@ -1,4 +1,4 @@
-INSERT INTO options (QUESTION_ID, OPTION_TEXT, IS_CORRECT)
+INSERT INTO options (QUESTION_ID, OPTION_TEXT, CORRECT)
 VALUES
 -- For the question: "What is the capital of France?"
 (1, 'Paris', true),

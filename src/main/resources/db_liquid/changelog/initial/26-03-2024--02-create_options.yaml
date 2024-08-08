@@ -27,7 +27,7 @@ databaseChangeLog:
                   name: option_text
                   type: varchar(255)
               - column:
-                  name: is_correct
+                  name: correct
                   type: boolean
         - addForeignKeyConstraint:
             baseTableName: options
