@@ -7,13 +7,17 @@ databaseChangeLog:
   - include:
       file: /db_liquid/changelog/initial/26-03-2024--01-create_questions_table.yaml
   - include:
-      file: /db_liquid/changelog/initial/26-03-2024--01-create_quiz_results_table.yaml
+      file: /db_liquid/changelog/initial/09-08-2024--02-create_quiz_results_table.yaml
   - include:
       file: /db_liquid/changelog/initial/26-03-2024--02-create_options.yaml
   - include:
       file: /db_liquid/changelog/initial/26-03-2024--01-create_authorities_table.yaml
   - include:
       file: /db_liquid/changelog/initial/26-03-2024--02-create_role-user_table.yaml
+  - include:
+      file: /db_liquid/changelog/initial/09-08-2024--02-create_user_quiz_answers.yaml
+  - include:
+      file: /db_liquid/changelog/initial/09-08-2024--02-create_user_quiz_submissions.yaml
 
 # updates
 #  - include:
@@ -27,7 +31,7 @@ databaseChangeLog:
   - include:
       file: /db_liquid/changelog/initial/inserts/29-03-2024--01-insert_questions.sql
   - include:
-      file: /db_liquid/changelog/initial/inserts/26-03-2024--01-insert_quiz_results.sql
+      file: /db_liquid/changelog/initial/inserts/26-03-2024--02-insert_quiz_results.sql
   - include:
       file: /db_liquid/changelog/initial/inserts/29-03-2024--01-insert_options.sql
   - include:

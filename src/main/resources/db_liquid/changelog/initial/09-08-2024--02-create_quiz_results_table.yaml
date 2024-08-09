@@ -28,6 +28,11 @@ databaseChangeLog:
                   type: bigint
                   constraints:
                     nullable: false
+              - column:
+                  name: score
+                  type: bigint
+                  constraints:
+                    nullable: false
         - addForeignKeyConstraint:
             baseTableName: quiz_results
             baseColumnNames: user_id
