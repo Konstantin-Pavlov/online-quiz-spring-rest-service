@@ -4,7 +4,9 @@ import kg.attractor.online_quiz_platform.dto.OptionDto;
 import kg.attractor.online_quiz_platform.dto.QuestionDto;
 import kg.attractor.online_quiz_platform.dto.QuizDto;
 import kg.attractor.online_quiz_platform.exception.QuizAlreadyExistsException;
+import kg.attractor.online_quiz_platform.exception.QuizNotFoundException;
 import kg.attractor.online_quiz_platform.model.Quiz;
+import kg.attractor.online_quiz_platform.model.QuizAnswer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.support.DataAccessUtils;
@@ -123,10 +125,98 @@ public class QuizDao {
         ));
     }
 
+    public void saveQuizAnswer(QuizAnswer userQuizAnswer) {
+        String sql = """
+                INSERT INTO USER_QUIZ_ANSWERS (USER_ID, QUIZ_ID, QUESTION_ID, OPTION_ID, TIMESTAMP)
+                VALUES (:userId, :quizId, :questionId, :optionId, :timestamp)
+                """;
 
-        private boolean quizExists(String quizTitle) {
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("userId", userQuizAnswer.getUserId())
+                .addValue("quizId", userQuizAnswer.getQuizId())
+                .addValue("questionId", userQuizAnswer.getQuestionId())
+                .addValue("optionId", userQuizAnswer.getOptionId())
+                .addValue("timestamp", userQuizAnswer.getTimestamp());
+
+        namedParameterJdbcTemplate.update(sql, params);
+    }
+
+    public int countQuestionsByQuizId(Long quizId) {
+        String sql = """
+                SELECT COUNT(*) FROM questions WHERE quiz_id = :quizId
+                """;
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("quizId", quizId);
+        Integer count = namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
+        if (count == null) {
+            throw new QuizNotFoundException("Quiz with ID " + quizId + " not found or has no questions.");
+        }
+        return count;
+    }
+
+    public Optional<QuizAnswer> findIfUserAnsweredQuiz(Long userId, Long quizId) {
+        String sql = """
+                SELECT * FROM USER_QUIZ_SUBMISSIONS
+                WHERE user_id = ? AND quiz_id = ?
+                """;
+
+        List<QuizAnswer> results = template.query(sql, new Object[]{userId, quizId}, (rs, rowNum) -> {
+            QuizAnswer quizAnswer = new QuizAnswer();
+            quizAnswer.setId(rs.getLong("id"));
+            quizAnswer.setUserId(rs.getLong("user_id"));
+            quizAnswer.setQuizId(rs.getLong("quiz_id"));
+            quizAnswer.setTimestamp(rs.getTimestamp("timestamp").toLocalDateTime());
+            return quizAnswer;
+        });
+
+        return results.stream().findFirst();
+    }
+
+    public void saveUserQuizSubmission(long userId, long quizId) {
+        String sql = """
+                INSERT INTO USER_QUIZ_SUBMISSIONS (USER_ID, QUIZ_ID)
+                VALUES (:userId, :quizId )
+                """;
+
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("userId", userId)
+                .addValue("quizId", quizId);
+
+        namedParameterJdbcTemplate.update(sql, params);
+    }
+
+    public void saveQuizResult(long userId, long quizId, int score) {
+        String sql = """
+                INSERT INTO QUIZ_RESULTS (USER_ID, QUIZ_ID, SCORE)
+                VALUES (:userId, :quizId, :score)
+                """;
+
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("userId", userId)
+                .addValue("quizId", quizId)
+                .addValue("score", score);
+
+        namedParameterJdbcTemplate.update(sql, params);
+    }
+
+    public int getCorrectAnswersCount(long userId, long quizId) {
+        String sql = """
+                SELECT SCORE FROM QUIZ_RESULTS
+                WHERE USER_ID = :userId AND QUIZ_ID = :quizId
+                """;
+
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("userId", userId)
+                .addValue("quizId", quizId);
+
+        Integer score = namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
+        return score != null ? score : 0;
+    }
+
+    private boolean quizExists(String quizTitle) {
         Optional<Quiz> quiz = getQuizByTitle(quizTitle);
         return quiz.isPresent();
     }
+
 }
 

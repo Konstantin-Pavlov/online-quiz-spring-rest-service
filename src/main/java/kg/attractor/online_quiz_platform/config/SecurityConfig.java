@@ -85,9 +85,11 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/users/**").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/quizzes/").hasAnyAuthority("ADMIN", "GUEST")
                                 .requestMatchers(HttpMethod.GET, "/quizzes/{id}").hasAnyAuthority("ADMIN", "GUEST")
+                                .requestMatchers(HttpMethod.GET, "/quizzes/{id}/results").hasAnyAuthority("ADMIN", "GUEST")
                                 .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/users/add").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/quizzes/").hasAnyAuthority("ADMIN", "GUEST")
+                                .requestMatchers(HttpMethod.POST, "/quizzes/{id}/solve").hasAnyAuthority("ADMIN", "GUEST")
                                 .requestMatchers("/swagger-ui/**").permitAll()
                                 .anyRequest().authenticated()
                 );
