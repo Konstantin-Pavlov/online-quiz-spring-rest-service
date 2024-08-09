@@ -1,12 +1,10 @@
 package kg.attractor.online_quiz_platform.service.impl;
 
-import kg.attractor.online_quiz_platform.dao.QuestionDao;
 import kg.attractor.online_quiz_platform.dao.QuizDao;
 import kg.attractor.online_quiz_platform.dto.QuizDto;
 import kg.attractor.online_quiz_platform.exception.QuizNotFoundException;
 import kg.attractor.online_quiz_platform.mapper.QuestionMapper;
 import kg.attractor.online_quiz_platform.mapper.QuizMapper;
-import kg.attractor.online_quiz_platform.model.Option;
 import kg.attractor.online_quiz_platform.model.Question;
 import kg.attractor.online_quiz_platform.model.Quiz;
 import kg.attractor.online_quiz_platform.service.QuestionService;
@@ -25,7 +23,6 @@ import java.util.Optional;
 public class QuizServiceImpl implements QuizService {
 
     private final QuizDao quizDao;
-    private final QuestionDao questionDao;
     private final QuestionService questionService;
 
 

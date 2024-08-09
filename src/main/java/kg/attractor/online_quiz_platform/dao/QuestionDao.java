@@ -20,7 +20,7 @@ import java.util.List;
 public class QuestionDao {
     private final JdbcTemplate template;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    private OptionDao optionDao;
+    private final OptionDao optionDao;
 
 
     public List<Question> getQuestionsByQuizId(long id) {
