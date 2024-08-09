@@ -16,5 +16,6 @@ public class QuizDto {
     private String title;
     private String description;
     private Long creatorId;
-    List<Question> questions;
+//    @JsonProperty("questions")
+    List<QuestionDto> questions;
 }

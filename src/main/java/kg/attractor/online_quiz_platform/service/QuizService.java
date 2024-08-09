@@ -8,4 +8,6 @@ public interface QuizService {
     List<QuizDto> getQuizzes();
 
     void saveQuiz(QuizDto quiz);
+
+    QuizDto getQuizById(long id);
 }

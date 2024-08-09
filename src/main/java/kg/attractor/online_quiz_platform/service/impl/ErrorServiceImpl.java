@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
+import java.sql.SQLSyntaxErrorException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +34,11 @@ public class ErrorServiceImpl implements ErrorService {
         if (exception instanceof EmailAlreadyExistsException) {
             return ErrorResponseBody.builder()
                     .title("Email Already Exists")
+                    .reasons(Map.of("error", List.of(exception.getMessage())))
+                    .build();
+        }        if (exception instanceof SQLSyntaxErrorException) {
+            return ErrorResponseBody.builder()
+                    .title("Database Syntax Error")
                     .reasons(Map.of("error", List.of(exception.getMessage())))
                     .build();
         }

@@ -1,8 +1,8 @@
 package kg.attractor.online_quiz_platform.service.impl;
 
 import kg.attractor.online_quiz_platform.dao.QuestionDao;
-import kg.attractor.online_quiz_platform.dto.Question;
-import kg.attractor.online_quiz_platform.model.QuestionWithOptions;
+import kg.attractor.online_quiz_platform.dto.QuestionDto;
+import kg.attractor.online_quiz_platform.model.Question;
 import kg.attractor.online_quiz_platform.service.OptionService;
 import kg.attractor.online_quiz_platform.service.QuestionService;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +20,11 @@ public class QuestionServiceImpl implements QuestionService {
     private final OptionService optionService;
 
     @Override
-    public List<Question> getQuestions() {
+    public List<QuestionDto> getQuestions() {
         List<kg.attractor.online_quiz_platform.model.Question> questions = questionDao.getQuestions();
-        List<Question> dtos = new ArrayList<>();
+        List<QuestionDto> dtos = new ArrayList<>();
         questions.forEach(question ->
-                dtos.add(Question.builder()
+                dtos.add(QuestionDto.builder()
                         .id(question.getId())
                         .quizId(question.getQuizId())
                         .questionText(question.getQuestionText())
@@ -35,11 +35,11 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<Question> getFUllQuestionsByQuizId(long id) {
-        List<QuestionWithOptions> fullQuestions = questionDao.getFullQuestionsByQuizId(id);
-        List<Question> dtos = new ArrayList<>();
+    public List<QuestionDto> getQuestionsByQuizId(long id) {
+        List<Question> fullQuestions = questionDao.getQuestionsByQuizId(id);
+        List<QuestionDto> dtos = new ArrayList<>();
         fullQuestions.forEach(questionWithOptions ->
-                dtos.add(Question.builder()
+                dtos.add(QuestionDto.builder()
                         .id(questionWithOptions.getId())
                         .quizId(questionWithOptions.getQuizId())
                         .questionText(questionWithOptions.getQuestionText())
@@ -51,8 +51,8 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public void createQuestion(Question question) {
-        questionDao.createQuestion(question);
-        log.info("added question with quiz id {}", question.getQuizId());
+    public void createQuestion(QuestionDto questionDto) {
+        questionDao.createQuestion(questionDto);
+        log.info("added question with quiz id {}", questionDto.getQuizId());
     }
 }

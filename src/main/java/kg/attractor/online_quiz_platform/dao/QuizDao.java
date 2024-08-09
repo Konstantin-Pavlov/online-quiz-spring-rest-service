@@ -1,7 +1,7 @@
 package kg.attractor.online_quiz_platform.dao;
 
 import kg.attractor.online_quiz_platform.dto.OptionDto;
-import kg.attractor.online_quiz_platform.dto.Question;
+import kg.attractor.online_quiz_platform.dto.QuestionDto;
 import kg.attractor.online_quiz_platform.dto.QuizDto;
 import kg.attractor.online_quiz_platform.exception.QuizAlreadyExistsException;
 import kg.attractor.online_quiz_platform.model.Quiz;
@@ -31,12 +31,11 @@ public class QuizDao {
     public Optional<Quiz> getQuizByTitle(String title) {
         String sql = """
                 SELECT * FROM QUIZZES
-                WHERE TITLE = :title
+                WHERE TITLE = ?
                 """;
         return Optional.ofNullable(DataAccessUtils.singleResult(
                 template.query(sql, new BeanPropertyRowMapper<>(Quiz.class), title)
         ));
-
     }
 
     public void saveQuiz(QuizDto quiz) {
@@ -56,36 +55,37 @@ public class QuizDao {
                 .addValue("creatorId", quiz.getCreatorId());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         // Explicitly checks for null and throws a more informative NullPointerException with a clear message if keyHolder.getKey() is null.
-        long generatedQuizId = Objects.requireNonNull(keyHolder.getKey()).longValue();
         namedParameterJdbcTemplate.update(sql, params, keyHolder, new String[]{"ID"});
+
+        long generatedQuizId = Objects.requireNonNull(keyHolder.getKey()).longValue();
 
         log.info("Saved quiz with title '{}'", quiz.getTitle());
 
-        for (Question question : quiz.getQuestions()) {
-            question.setQuizId(generatedQuizId);
-            saveQuestion(question);
+        for (QuestionDto questionDto : quiz.getQuestions()) {
+            questionDto.setQuizId(generatedQuizId);
+            saveQuestion(questionDto);
         }
 
     }
 
-    private void saveQuestion(Question question) {
+    private void saveQuestion(QuestionDto questionDto) {
         String sql = """
                     INSERT INTO QUESTIONS (QUIZ_ID, QUESTION_TEXT)
                     VALUES (:quizId, :questionText);
                 """;
 
         SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("quizId", question.getQuizId())
-                .addValue("questionText", question.getQuestionText());
+                .addValue("quizId", questionDto.getQuizId())
+                .addValue("questionText", questionDto.getQuestionText());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         namedParameterJdbcTemplate.update(sql, params, keyHolder, new String[]{"ID"});
 
         Long generatedQuestionId = Objects.requireNonNull(keyHolder.getKey()).longValue();
-        question.setId(generatedQuestionId); // Set the generated ID to the question
+        questionDto.setId(generatedQuestionId); // Set the generated ID to the question
 
-        log.info("Saved question with test '{}'", question.getQuestionText());
+        log.info("Saved question with test '{}'", questionDto.getQuestionText());
 
-        for (OptionDto option : question.getOptions()) {
+        for (OptionDto option : questionDto.getOptions()) {
             option.setQuestionId(generatedQuestionId); // Set the generated question ID to the options
             saveOption(option);
         }
@@ -106,16 +106,27 @@ public class QuizDao {
         log.info("Saved option with option text '{}'", option.getOptionText());
     }
 
-    private boolean quizExists(String quizTitle) {
-        Optional<Quiz> quiz = getQuizByTitle(quizTitle);
-        return quiz.isPresent();
-    }
-
-    public List<Quiz> getFullQuizzes() {
+    public List<Quiz> getQuizzes() {
         String sql = """
                 SELECT * FROM QUIZZES
                 """;
         return template.query(sql, new BeanPropertyRowMapper<>(Quiz.class));
+    }
+
+    public Optional<Quiz> getQuizById(long id) {
+        String sql = """
+                SELECT * FROM QUIZZES
+                WHERE ID = ?
+                """;
+        return Optional.ofNullable(DataAccessUtils.singleResult(
+                template.query(sql, new BeanPropertyRowMapper<>(Quiz.class), id)
+        ));
+    }
+
+
+        private boolean quizExists(String quizTitle) {
+        Optional<Quiz> quiz = getQuizByTitle(quizTitle);
+        return quiz.isPresent();
     }
 }
 

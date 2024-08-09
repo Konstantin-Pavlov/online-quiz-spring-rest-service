@@ -15,7 +15,7 @@ import java.util.List;
 public class OptionDao {
     private final JdbcTemplate template;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    private QuizFullDao quizDao;
+    private QuizDao quizDao;
 
     public List<Option> getOptionsByQuestionId(long id) {
         String sql = """
