@@ -2,10 +2,13 @@ package kg.attractor.online_quiz_platform.exception.handler;
 
 import kg.attractor.online_quiz_platform.exception.EmailAlreadyExistsException;
 import kg.attractor.online_quiz_platform.exception.ErrorResponseBody;
+import kg.attractor.online_quiz_platform.exception.InvalidQuizAnswerException;
+import kg.attractor.online_quiz_platform.exception.QuizAlreadyAnsweredException;
 import kg.attractor.online_quiz_platform.exception.QuizAlreadyExistsException;
 import kg.attractor.online_quiz_platform.exception.QuizNotFoundException;
 import kg.attractor.online_quiz_platform.service.ErrorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -42,5 +45,20 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SQLSyntaxErrorException.class)
     public ResponseEntity<ErrorResponseBody> handleSQLSyntaxError(SQLSyntaxErrorException exception) {
         return new ResponseEntity<>(errorService.makeResponse(exception), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(QuizAlreadyAnsweredException.class)
+    public ResponseEntity<ErrorResponseBody> handleQuizAlreadyAnswered(QuizAlreadyAnsweredException exception) {
+        return new ResponseEntity<>(errorService.makeResponse(exception), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(InvalidQuizAnswerException.class)
+    public ResponseEntity<ErrorResponseBody> handleInvalidQuizAnswer(InvalidQuizAnswerException exception) {
+        return new ResponseEntity<>(errorService.makeResponse(exception), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponseBody> handleJdbcSQLIntegrityConstraintViolation(DataIntegrityViolationException exception) {
+        return new ResponseEntity<>(errorService.makeResponse(exception), HttpStatus.CONFLICT);
     }
 }

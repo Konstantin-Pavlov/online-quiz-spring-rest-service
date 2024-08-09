@@ -25,6 +25,7 @@ public class ErrorServiceImpl implements ErrorService {
     @Override
     public ErrorResponseBody makeResponse(Exception exception) {
         log.error(exception.getMessage());
+//        exception.printStackTrace();
         if (exception instanceof QuizAlreadyExistsException) {
             return ErrorResponseBody.builder()
                     .title("Quiz Already Exists")
