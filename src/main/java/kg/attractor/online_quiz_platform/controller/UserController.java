@@ -43,7 +43,7 @@ public class UserController {
             userService.createUser(user);
             return ResponseEntity.status(HttpStatus.OK).body("User added successfully");
         } catch (DataIntegrityViolationException e) {
-            throw new EmailAlreadyExistsException("Email '" + user.getEmail() + "' already exists.");
+            throw new EmailAlreadyExistsException("User with email '" + user.getEmail() + "' already exists.");
         }
     }
 }
