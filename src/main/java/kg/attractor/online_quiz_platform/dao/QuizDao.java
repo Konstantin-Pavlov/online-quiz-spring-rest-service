@@ -3,10 +3,13 @@ package kg.attractor.online_quiz_platform.dao;
 import kg.attractor.online_quiz_platform.dto.OptionDto;
 import kg.attractor.online_quiz_platform.dto.QuestionDto;
 import kg.attractor.online_quiz_platform.dto.QuizDto;
+import kg.attractor.online_quiz_platform.dto.QuizRateDto;
+import kg.attractor.online_quiz_platform.dto.QuizResultDto;
 import kg.attractor.online_quiz_platform.exception.QuizAlreadyExistsException;
 import kg.attractor.online_quiz_platform.exception.QuizNotFoundException;
 import kg.attractor.online_quiz_platform.model.Quiz;
 import kg.attractor.online_quiz_platform.model.QuizAnswer;
+import kg.attractor.online_quiz_platform.model.QuizRate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.support.DataAccessUtils;
@@ -199,7 +202,7 @@ public class QuizDao {
         namedParameterJdbcTemplate.update(sql, params);
     }
 
-    public int getCorrectAnswersCount(long userId, long quizId) {
+    public int getCorrectAnswersCountByQuizId(long userId, long quizId) {
         String sql = """
                 SELECT SCORE FROM QUIZ_RESULTS
                 WHERE USER_ID = :userId AND QUIZ_ID = :quizId
@@ -218,5 +221,32 @@ public class QuizDao {
         return quiz.isPresent();
     }
 
+    public void saveQuizRate(QuizRateDto quizRateDto) {
+        String sql = """
+                INSERT INTO QUIZ_RATE (QUIZ_ID, RATE)
+                VALUES (:quizId, :rate)
+                """;
+
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("quizId", quizRateDto.getQuizId())
+                .addValue("rate", quizRateDto.getRate());
+
+        namedParameterJdbcTemplate.update(sql, params);
+    }
+
+    public List<QuizRate> getQuizzesRates() {
+        String sql = """
+                SELECT * FROM QUIZ_RATE
+                """;
+        return template.query(sql, new BeanPropertyRowMapper<>(QuizRate.class));
+    }
+
+    public List<QuizResultDto> getQuizResults(long quizId) {
+        String sql = """
+                SELECT * FROM QUIZ_RESULTS
+                WHERE QUIZ_ID = ?
+                """;
+        return template.query(sql, new BeanPropertyRowMapper<>(QuizResultDto.class), quizId);
+    }
 }
 

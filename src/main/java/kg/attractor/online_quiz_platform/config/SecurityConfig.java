@@ -13,7 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import javax.sql.DataSource;
@@ -82,16 +81,24 @@ public class SecurityConfig {
                 .logout(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                                .requestMatchers(HttpMethod.GET, "/users/**").hasAuthority("ADMIN")
-                                .requestMatchers(HttpMethod.GET, "/quizzes/").hasAnyAuthority("ADMIN", "GUEST")
-                                .requestMatchers(HttpMethod.GET, "/quizzes/{id}").hasAnyAuthority("ADMIN", "GUEST")
-                                .requestMatchers(HttpMethod.GET, "/quizzes/{id}/results").hasAnyAuthority("ADMIN", "GUEST")
-                                .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/users/add").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/quizzes/").hasAnyAuthority("ADMIN", "GUEST")
-                                .requestMatchers(HttpMethod.POST, "/quizzes/{id}/solve").hasAnyAuthority("ADMIN", "GUEST")
-                                .requestMatchers("/swagger-ui/**").permitAll()
-                                .anyRequest().authenticated()
+                        // Public Endpoints
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/register").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/quizzes/rates").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/quizzes").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/quizzes/{quizId}/results").permitAll()
+
+                        // Authenticated Endpoints
+                        .requestMatchers(HttpMethod.GET, "/api/users/**").hasAuthority("ADMIN")
+
+                        // Role-Specific Endpoints
+                        .requestMatchers(HttpMethod.GET, "/api/quizzes/{id}").hasAnyAuthority("ADMIN", "GUEST")
+                        .requestMatchers(HttpMethod.POST, "/api/quizzes/").hasAnyAuthority("ADMIN", "GUEST")
+                        .requestMatchers(HttpMethod.POST, "/api/quizzes/{quizId}/solve").hasAnyAuthority("ADMIN", "GUEST")
+                        .requestMatchers(HttpMethod.GET, "/api/quizzes/{quizId}/rate").hasAnyAuthority("ADMIN", "GUEST")
+
+                        // Catch-All
+                        .anyRequest().authenticated()
                 );
         return http.build();
     }

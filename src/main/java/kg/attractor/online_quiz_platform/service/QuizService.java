@@ -2,6 +2,8 @@ package kg.attractor.online_quiz_platform.service;
 
 import kg.attractor.online_quiz_platform.dto.QuizAnswerDto;
 import kg.attractor.online_quiz_platform.dto.QuizDto;
+import kg.attractor.online_quiz_platform.dto.QuizRateDto;
+import kg.attractor.online_quiz_platform.dto.QuizResultDto;
 import kg.attractor.online_quiz_platform.dto.ResultDto;
 
 import java.util.List;
@@ -15,6 +17,9 @@ public interface QuizService {
 
     void saveQuizAnswer(QuizAnswerDto quizAnswerDto);
 
+    List<QuizResultDto> getQuizResults(long quizId);
 
-    ResultDto getQuizResults(long userId, long id);
+    void rateQuiz(QuizRateDto quizRateDto);
+
+    List<QuizRateDto> getQuizzesRates();
 }
