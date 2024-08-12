@@ -356,6 +356,26 @@
               ]
             }
           }
+        },
+        {
+          "name": "Get User statistics",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8089/api/users/10/statistics",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8089",
+              "path": [
+                "api",
+                "users",
+                "10",
+                "statistics"
+              ]
+            }
+          }
         }
       ]
     }

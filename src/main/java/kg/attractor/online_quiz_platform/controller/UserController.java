@@ -1,6 +1,7 @@
 package kg.attractor.online_quiz_platform.controller;
 
 import kg.attractor.online_quiz_platform.dto.UserDto;
+import kg.attractor.online_quiz_platform.dto.UserStatisticsDto;
 import kg.attractor.online_quiz_platform.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +23,14 @@ public class UserController {
         return ResponseEntity.ok(userService.getUsers());
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<?> getUserById(@PathVariable long id) {
-        return ResponseEntity.ok(userService.getUserById(id));
+    @GetMapping("{userId}")
+    public ResponseEntity<UserDto> getUserById(@PathVariable long userId) {
+        return ResponseEntity.ok(userService.getUserById(userId));
+    }
+
+    @GetMapping("{userId}/statistics")
+    public ResponseEntity<UserStatisticsDto> getUserStatistics(@PathVariable long userId) {
+        return ResponseEntity.ok(userService.getUserStatisticsById(userId));
     }
 
 }

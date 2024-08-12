@@ -2,6 +2,8 @@ package kg.attractor.online_quiz_platform.dao;
 
 
 import kg.attractor.online_quiz_platform.dto.UserDto;
+import kg.attractor.online_quiz_platform.model.Quiz;
+import kg.attractor.online_quiz_platform.model.QuizResult;
 import kg.attractor.online_quiz_platform.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +56,18 @@ public class UserDao {
                 DataAccessUtils.singleResult(
                         template.query(sql, new BeanPropertyRowMapper<>(User.class), id)
                 ));
+    }
+
+    public List<QuizResult> getQuizResultsByUserId(long userId) {
+        String sql = """
+                SELECT * FROM QUIZ_RESULTS
+                WHERE USER_ID = :userId
+                """;
+
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("userId", userId);
+
+        return namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(QuizResult.class));
     }
 
     public void createUser(UserDto user) {
