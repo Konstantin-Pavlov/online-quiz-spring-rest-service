@@ -1,7 +1,6 @@
 package kg.attractor.online_quiz_platform.service.impl;
 
 
-import kg.attractor.online_quiz_platform.dao.QuizDao;
 import kg.attractor.online_quiz_platform.dao.UserDao;
 import kg.attractor.online_quiz_platform.dto.UserDto;
 import kg.attractor.online_quiz_platform.dto.UserStatisticsDto;
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserDao userDao;
-    private final QuizDao quizDao;
 
     @Override
     public List<UserDto> getUsers() {

@@ -2,7 +2,6 @@ package kg.attractor.online_quiz_platform.dao;
 
 
 import kg.attractor.online_quiz_platform.dto.UserDto;
-import kg.attractor.online_quiz_platform.model.Quiz;
 import kg.attractor.online_quiz_platform.model.QuizResult;
 import kg.attractor.online_quiz_platform.model.User;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,7 @@ import java.util.Optional;
 public class UserDao {
     private final JdbcTemplate template;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     private final Map<String, Integer> userAuthorityMap = new HashMap<>() {{
         put("ADMIN", 1);
