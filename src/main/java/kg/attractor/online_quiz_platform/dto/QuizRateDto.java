@@ -19,6 +19,7 @@ import lombok.experimental.FieldDefaults;
 public class QuizRateDto {
     Long id;
     Long quizId;
+    long userId;
     @Min(value = 1, message = " rate should be minimum 1")
     @Max(value = 5, message = " rate should be maximum 5")
     byte rate;

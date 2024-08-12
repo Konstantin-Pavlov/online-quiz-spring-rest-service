@@ -11,5 +11,6 @@ import lombok.experimental.FieldDefaults;
 public class QuizRate {
     Long id;
     Long quizId;
+    long userId;
     byte rate;
 }

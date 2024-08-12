@@ -9,8 +9,8 @@ import kg.attractor.online_quiz_platform.dto.QuizDto;
 import kg.attractor.online_quiz_platform.dto.QuizRateDto;
 import kg.attractor.online_quiz_platform.dto.QuizResultDto;
 import kg.attractor.online_quiz_platform.exception.InvalidQuizAnswerException;
-import kg.attractor.online_quiz_platform.exception.QuizAlreadyAnsweredException;
 import kg.attractor.online_quiz_platform.exception.QuizNotFoundException;
+import kg.attractor.online_quiz_platform.exception.UserAlreadyRatedQuizException;
 import kg.attractor.online_quiz_platform.exception.UserNotFoundException;
 import kg.attractor.online_quiz_platform.mapper.QuestionMapper;
 import kg.attractor.online_quiz_platform.mapper.QuizMapper;
@@ -71,23 +71,8 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public void saveQuizAnswer(QuizAnswerDto quizAnswerDto) {
-        // check if quiz exists
-        if (!quizExists(quizAnswerDto.getQuizId())) {
-            log.error(String.format("Quiz with id %s not found", quizAnswerDto.getQuizId()));
-            throw new QuizNotFoundException(String.format("Quiz with id %s not found", quizAnswerDto.getQuizId()));
-        }
-
-        // check if user exists
-        if (!userExists(quizAnswerDto.getUserId())) {
-            log.error(String.format("User with id %s not found", quizAnswerDto.getUserId()));
-            throw new UserNotFoundException(String.format("User with id %s not found", quizAnswerDto.getUserId()));
-        }
-
-        // Check if the user has already answered this quiz
-        if (quizDao.findIfUserAnsweredQuiz(quizAnswerDto.getUserId(), quizAnswerDto.getQuizId()).isPresent()) {
-            log.error("User with id {} has already answered this quiz with id {}", quizAnswerDto.getUserId(), quizAnswerDto.getQuizId());
-            throw new QuizAlreadyAnsweredException("User has already answered this quiz");
-        }
+        // check if quiz and user exists
+        checkIfQuizAndUserExist(quizAnswerDto.getQuizId(), quizAnswerDto.getUserId());
 
         // Validate the number of answers
         int numberOfQuestions = quizDao.countQuestionsByQuizId(quizAnswerDto.getQuizId());
@@ -134,6 +119,13 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public void rateQuiz(QuizRateDto quizRateDto) {
+        checkIfQuizAndUserExist(quizRateDto.getQuizId(), quizRateDto.getUserId());
+        if (quizDao.hasUserRatedQuiz(quizRateDto.getQuizId(), quizRateDto.getUserId())) {
+            throw new UserAlreadyRatedQuizException(
+                    String.format("User with id %d has already rated quiz with id %d",
+                            quizRateDto.getUserId(), quizRateDto.getQuizId())
+            );
+        }
         quizDao.saveQuizRate(quizRateDto);
         log.info("quiz with id {} rated to {}", quizRateDto.getQuizId(), quizRateDto.getRate());
     }
@@ -167,12 +159,26 @@ public class QuizServiceImpl implements QuizService {
         log.info("score calculated: {}. Results saved", score);
     }
 
+    private void checkIfQuizAndUserExist(long quizId, long userId) {
+        // check if quiz exists
+        if (quizExists(quizId)) {
+            log.error(String.format("Quiz with id %s not found", quizId));
+            throw new QuizNotFoundException(String.format("Quiz with id %s not found", quizId));
+        }
+
+        // check if user exists
+        if (userExists(userId)) {
+            log.error(String.format("User with id %s not found", userId));
+            throw new UserNotFoundException(String.format("User with id %s not found", userId));
+        }
+    }
+
     private boolean quizExists(long quizId) {
-        return quizDao.getQuizById(quizId).isPresent();
+        return quizDao.getQuizById(quizId).isEmpty();
     }
 
     private boolean userExists(long userId) {
-        return userDao.getUserById(userId).isPresent();
+        return userDao.getUserById(userId).isEmpty();
     }
 
 }

@@ -175,6 +175,20 @@ public class QuizDao {
         return results.stream().findFirst();
     }
 
+    public boolean hasUserRatedQuiz(long quizId, long userId) {
+        String sql = """
+            SELECT COUNT(*) FROM QUIZ_RATE
+            WHERE QUIZ_ID = :quizId AND USER_ID = :userId
+            """;
+
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("quizId", quizId)
+                .addValue("userId", userId);
+
+        Integer count = namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
+        return count != null && count > 0;
+    }
+
     public void saveUserQuizSubmission(long userId, long quizId) {
         String sql = """
                 INSERT INTO USER_QUIZ_SUBMISSIONS (USER_ID, QUIZ_ID)
@@ -223,12 +237,13 @@ public class QuizDao {
 
     public void saveQuizRate(QuizRateDto quizRateDto) {
         String sql = """
-                INSERT INTO QUIZ_RATE (QUIZ_ID, RATE)
-                VALUES (:quizId, :rate)
+                INSERT INTO QUIZ_RATE (QUIZ_ID, USER_ID, RATE)
+                VALUES (:quizId, :userId, :rate)
                 """;
 
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("quizId", quizRateDto.getQuizId())
+                .addValue("userId", quizRateDto.getUserId())
                 .addValue("rate", quizRateDto.getRate());
 
         namedParameterJdbcTemplate.update(sql, params);

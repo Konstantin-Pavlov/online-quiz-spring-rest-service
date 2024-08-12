@@ -6,6 +6,7 @@ import kg.attractor.online_quiz_platform.exception.InvalidQuizAnswerException;
 import kg.attractor.online_quiz_platform.exception.QuizAlreadyAnsweredException;
 import kg.attractor.online_quiz_platform.exception.QuizAlreadyExistsException;
 import kg.attractor.online_quiz_platform.exception.QuizNotFoundException;
+import kg.attractor.online_quiz_platform.exception.UserAlreadyRatedQuizException;
 import kg.attractor.online_quiz_platform.exception.UserNotFoundException;
 import kg.attractor.online_quiz_platform.service.ErrorService;
 import lombok.RequiredArgsConstructor;
@@ -65,6 +66,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponseBody> handleJdbcSQLIntegrityConstraintViolation(UserNotFoundException exception) {
+        return new ResponseEntity<>(errorService.makeResponse(exception), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(UserAlreadyRatedQuizException.class)
+    public ResponseEntity<ErrorResponseBody> handleJdbcSQLIntegrityConstraintViolation(UserAlreadyRatedQuizException exception) {
         return new ResponseEntity<>(errorService.makeResponse(exception), HttpStatus.CONFLICT);
     }
 }
