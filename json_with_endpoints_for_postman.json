@@ -1,0 +1,343 @@
+{
+  "info": {
+    "name": "Online Quiz Platform API",
+    "description": "Postman collection for Online Quiz Platform API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Register Controller",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sid R\",\n  \"email\": \"sid.2@example.com\",\n  \"password\": \"123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8089/api/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8089",
+              "path": [
+                "api",
+                "register"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Quiz Controller",
+      "item": [
+        {
+          "name": "Create Quiz",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Географическая викторина\",\n  \"description\": \"Проверьте свои знания мировой географии\",\n  \"creatorId\": 10,\n  \"questions\": [\n    {\n      \"questionText\": \"Какова столица Франции?\",\n      \"options\": [\n        {\n          \"optionText\": \"Париж\",\n          \"correct\": true\n        },\n        {\n          \"optionText\": \"Лондон\",\n          \"correct\": false\n        },\n        {\n          \"optionText\": \"Берлин\",\n          \"correct\": false\n        },\n        {\n          \"optionText\": \"Рим\",\n          \"correct\": false\n        }\n      ]\n    },\n    {\n      \"questionText\": \"Какая страна известна как 'Страна восходящего солнца'?\",\n      \"options\": [\n        {\n          \"optionText\": \"Япония\",\n          \"correct\": true\n        },\n        {\n          \"optionText\": \"Китай\",\n          \"correct\": false\n        },\n        {\n          \"optionText\": \"Южная Корея\",\n          \"correct\": false\n        },\n        {\n          \"optionText\": \"Таиланд\",\n          \"correct\": false\n        }\n      ]\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8089/api/quizzes",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8089",
+              "path": [
+                "api",
+                "quizzes"
+              ]
+            },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "sid.1@example.com",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "123",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Solve Quiz",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userId\": 2,\n    \"answers\": {\n        \"1\": 1,\n        \"2\": 7\n    }\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8089/api/quizzes/100/solve",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8089",
+              "path": [
+                "api",
+                "quizzes",
+                "100",
+                "solve"
+              ]
+            },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "sid.1@example.com",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "123",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Rate Quiz",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rate\": 5\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8089/api/quizzes/1/rate",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8089",
+              "path": [
+                "api",
+                "quizzes",
+                "1",
+                "rate"
+              ]
+            },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "sid.1@example.com",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "123",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Quizzes",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8089/api/quizzes",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8089",
+              "path": [
+                "api",
+                "quizzes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Quiz By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8089/api/quizzes/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8089",
+              "path": [
+                "api",
+                "quizzes",
+                "1"
+              ]
+            },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "sid.1@example.com",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "123",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Quiz Results",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8089/api/quizzes/1/results",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8089",
+              "path": [
+                "api",
+                "quizzes",
+                "1",
+                "results"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Quizzes Rates",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8089/api/quizzes/rates",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8089",
+              "path": [
+                "api",
+                "quizzes",
+                "rates"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Controller",
+      "item": [
+        {
+          "name": "Get Users",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8089/api/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8089",
+              "path": [
+                "api",
+                "users"
+              ]
+            },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "qwe@qwe.qwe",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "qwe",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8089/api/users/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8089",
+              "path": [
+                "api",
+                "users",
+                "1"
+              ]
+            },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "qwe@qwe.qwe",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "qwe",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
