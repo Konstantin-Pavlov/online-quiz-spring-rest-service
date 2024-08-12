@@ -22,4 +22,6 @@ public interface QuizService {
     void rateQuiz(QuizRateDto quizRateDto);
 
     List<QuizRateDto> getQuizzesRates();
+
+    List<QuizResultDto> getSortedQuizResults(long quizId);
 }

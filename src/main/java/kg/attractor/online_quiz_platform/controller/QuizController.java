@@ -64,4 +64,8 @@ public class QuizController {
         return ResponseEntity.status(HttpStatus.OK).body(String.format("quiz with id %d rated successfully", quizRateDto.getQuizId()));
     }
 
+    @GetMapping("{quizId}/leaderboard")
+    public ResponseEntity<List<QuizResultDto>> getQuizzesLeaderboard(@PathVariable long quizId) {
+        return ResponseEntity.ok(quizService.getSortedQuizResults(quizId));
+    }
 }

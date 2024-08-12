@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -134,6 +135,13 @@ public class QuizServiceImpl implements QuizService {
     public List<QuizRateDto> getQuizzesRates() {
         List<QuizRate> quizRates = quizDao.getQuizzesRates();
         return quizRates.stream().map(QuizRateMapper::toQuizRateDto).toList();
+    }
+
+    @Override
+    public List<QuizResultDto> getSortedQuizResults(long quizId) {
+        return getQuizResults(quizId).stream()
+                .sorted(Comparator.comparing(QuizResultDto::getScore).reversed())
+                .toList();
     }
 
     private void calculateAndSaveUserScore(QuizAnswerDto quizAnswerDto) {

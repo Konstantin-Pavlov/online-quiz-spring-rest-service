@@ -87,6 +87,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/quizzes/rates").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/quizzes").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/quizzes/{quizId}/results").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/quizzes/{quizId}/leaderboard").permitAll()
 
                         // Authenticated Endpoints
                         .requestMatchers(HttpMethod.GET, "/api/users/**").hasAuthority("ADMIN")

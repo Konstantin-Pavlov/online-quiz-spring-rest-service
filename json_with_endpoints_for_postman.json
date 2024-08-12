@@ -264,6 +264,26 @@
               ]
             }
           }
+        },
+        {
+          "name": "Get Quiz leaderboard",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8089/api/quizzes/1/leaderboard",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8089",
+              "path": [
+                "api",
+                "quizzes",
+                "1",
+                "leaderboard"
+              ]
+            }
+          }
         }
       ]
     },
