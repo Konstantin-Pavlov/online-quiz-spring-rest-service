@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
 
     //    @SneakyThrows // try catch -> e.printStackTrace()
     @Override
-    public UserDto getUserById(long id) throws UserNotFoundException {
+    public UserDto getUserById(long id)  {
         User user = userDao.getUserById(id).orElseThrow(
                 () -> new UserNotFoundException("Can't find user with email: " + id)
         );
