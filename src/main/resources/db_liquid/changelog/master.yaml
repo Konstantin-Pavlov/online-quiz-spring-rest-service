@@ -18,6 +18,8 @@ databaseChangeLog:
       file: /db_liquid/changelog/initial/09-08-2024--02-create_user_quiz_answers.yaml
   - include:
       file: /db_liquid/changelog/initial/09-08-2024--02-create_user_quiz_submissions.yaml
+  - include:
+      file: /db_liquid/changelog/initial/12-08-2024--02-create_quiz_rates_table.yaml
 
 # updates
 #  - include:
