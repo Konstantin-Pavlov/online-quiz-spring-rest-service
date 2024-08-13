@@ -23,7 +23,7 @@ public class QuizDto {
     private String description;
     @Min(value = 1, message = "creator id must be 1 or more")
     private Long creatorId;
-    @NotNull(message = "questions list is required")
-    @Size(min = 2, message = "At least 2 questions are required")
+    @NotNull(message = "questionsNumber list is required")
+    @Size(min = 2, message = "At least 2 questionsNumber are required")
     List<QuestionDto> questions;
 }

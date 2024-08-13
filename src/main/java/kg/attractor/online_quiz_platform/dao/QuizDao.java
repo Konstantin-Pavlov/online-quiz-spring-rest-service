@@ -152,7 +152,7 @@ public class QuizDao {
                 .addValue("quizId", quizId);
         Integer count = namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
         if (count == null) {
-            throw new QuizNotFoundException("Quiz with ID " + quizId + " not found or has no questions.");
+            throw new QuizNotFoundException("Quiz with ID " + quizId + " not found or has no questionsNumber.");
         }
         return count;
     }

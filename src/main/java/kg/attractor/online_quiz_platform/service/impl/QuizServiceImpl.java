@@ -6,6 +6,7 @@ import kg.attractor.online_quiz_platform.dto.OptionDto;
 import kg.attractor.online_quiz_platform.dto.QuestionDto;
 import kg.attractor.online_quiz_platform.dto.QuizAnswerDto;
 import kg.attractor.online_quiz_platform.dto.QuizDto;
+import kg.attractor.online_quiz_platform.dto.QuizOnlyWithQuestionsNumberDto;
 import kg.attractor.online_quiz_platform.dto.QuizRateDto;
 import kg.attractor.online_quiz_platform.dto.QuizResultDto;
 import kg.attractor.online_quiz_platform.exception.InvalidQuizAnswerException;
@@ -42,11 +43,17 @@ public class QuizServiceImpl implements QuizService {
 
 
     @Override
-    public List<QuizDto> getQuizzes() {
+    public List<QuizOnlyWithQuestionsNumberDto> getQuizzes() {
         List<Quiz> quizzes = quizDao.getQuizzes();
-        List<QuizDto> quizDtos = new ArrayList<>();
-        quizzes.forEach(quiz -> quizDtos.add(QuizDto.builder().id(quiz.getId()).title(quiz.getTitle()).description(quiz.getDescription()).questions(questionService.getQuestionsByQuizId(quiz.getId())).creatorId(quiz.getCreatorId()).build()));
-        return quizDtos;
+        List<QuizOnlyWithQuestionsNumberDto> dtos = new ArrayList<>();
+        quizzes.forEach(quiz -> dtos.add(
+                QuizOnlyWithQuestionsNumberDto.builder()
+                        .id(quiz.getId())
+                        .title(quiz.getTitle())
+                        .countQuestions(questionService.getQuestionsByQuizId(quiz.getId()).size())
+                        .build())
+        );
+        return dtos;
     }
 
     @Override
@@ -79,10 +86,10 @@ public class QuizServiceImpl implements QuizService {
         int numberOfQuestions = quizDao.countQuestionsByQuizId(quizAnswerDto.getQuizId());
         if (quizAnswerDto.getAnswers().size() != numberOfQuestions) {
             log.error(
-                    "The number of answers ({}) does not match the number of questions ({}) in the quiz (id {})",
+                    "The number of answers ({}) does not match the number of questionsNumber ({}) in the quiz (id {})",
                     numberOfQuestions, numberOfQuestions, quizAnswerDto.getQuizId()
             );
-            throw new InvalidQuizAnswerException("The number of answers does not match the number of questions in the quiz");
+            throw new InvalidQuizAnswerException("The number of answers does not match the number of questionsNumber in the quiz");
         }
 
         // Save each answer
