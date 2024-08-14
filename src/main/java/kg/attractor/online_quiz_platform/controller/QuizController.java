@@ -1,9 +1,10 @@
 package kg.attractor.online_quiz_platform.controller;
 
 import jakarta.validation.Valid;
+import kg.attractor.online_quiz_platform.dto.MicroQuizDto;
+import kg.attractor.online_quiz_platform.dto.MiniQuizDto;
 import kg.attractor.online_quiz_platform.dto.QuizAnswerDto;
 import kg.attractor.online_quiz_platform.dto.QuizDto;
-import kg.attractor.online_quiz_platform.dto.QuizOnlyWithQuestionsNumberDto;
 import kg.attractor.online_quiz_platform.dto.QuizRateDto;
 import kg.attractor.online_quiz_platform.dto.QuizResultDto;
 import kg.attractor.online_quiz_platform.service.QuizService;
@@ -26,7 +27,7 @@ import java.util.List;
 public class QuizController {
     private final QuizService quizService;
     private final TimerService timerService;
-    private static final long TIME_LIMIT_SECONDS = 60; // Define the time limit in seconds (1 minute)
+    private static final long TIME_LIMIT_SECONDS = 20; // Define the time limit in seconds (1 minute)
 
     @PostMapping
     public ResponseEntity<String> createQuiz(@RequestBody @Valid QuizDto quiz) {
@@ -35,22 +36,28 @@ public class QuizController {
     }
 
     @GetMapping
-    public ResponseEntity<List<QuizOnlyWithQuestionsNumberDto>> getQuizzes() {
+    public ResponseEntity<List<MicroQuizDto>> getQuizzes() {
         return ResponseEntity.ok(quizService.getQuizzes());
     }
 
     @GetMapping("{quizId}")
-    public ResponseEntity<QuizDto> getQuizById(@PathVariable long quizId) {
-        QuizDto quizDto = quizService.getQuizById(quizId);
-        timerService.startTimer(TIME_LIMIT_SECONDS, quizDto); // Start the timer
-        return ResponseEntity.ok(quizDto);
+    public ResponseEntity<MiniQuizDto> getQuizById(@PathVariable long quizId) {
+        MiniQuizDto miniQuizDto = quizService.getMiniQuizById(quizId);
+        timerService.startTimer(TIME_LIMIT_SECONDS, miniQuizDto); // Start the timer
+        return ResponseEntity.ok(miniQuizDto);
     }
 
     @PostMapping("{quizId}/solve")
     public ResponseEntity<String> solveQuiz(@RequestBody @Valid QuizAnswerDto quizAnswerDto, @PathVariable long quizId) {
         quizAnswerDto.setQuizId(quizId);
-        quizService.saveQuizAnswer(quizAnswerDto);
-        return ResponseEntity.status(HttpStatus.OK).body(String.format("answer for quiz with id %d added successfully", quizAnswerDto.getQuizId()));
+        if (timerService.isSubmissionInTime(quizId, TIME_LIMIT_SECONDS)) {
+            quizService.saveQuizAnswer(quizAnswerDto);
+            MiniQuizDto miniQuizDto = quizService.getMiniQuizById(quizId); // Fetch the MiniQuizDto to stop the timer
+            timerService.stopTimer(miniQuizDto); // Stop the timer
+            return ResponseEntity.status(HttpStatus.OK).body(String.format("Answer for quiz with id %d added successfully", quizAnswerDto.getQuizId()));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Time is up! Cannot submit the answer.");
+        }
     }
 
     @GetMapping("{quizId}/results")
