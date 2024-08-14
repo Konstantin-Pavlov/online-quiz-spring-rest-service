@@ -2,14 +2,17 @@ package kg.attractor.online_quiz_platform.service.impl;
 
 import kg.attractor.online_quiz_platform.dao.QuizDao;
 import kg.attractor.online_quiz_platform.dao.UserDao;
+import kg.attractor.online_quiz_platform.dto.MicroQuizDto;
+import kg.attractor.online_quiz_platform.dto.MiniQuestionDto;
+import kg.attractor.online_quiz_platform.dto.MiniQuizDto;
 import kg.attractor.online_quiz_platform.dto.OptionDto;
 import kg.attractor.online_quiz_platform.dto.QuestionDto;
 import kg.attractor.online_quiz_platform.dto.QuizAnswerDto;
 import kg.attractor.online_quiz_platform.dto.QuizDto;
-import kg.attractor.online_quiz_platform.dto.QuizOnlyWithQuestionsNumberDto;
 import kg.attractor.online_quiz_platform.dto.QuizRateDto;
 import kg.attractor.online_quiz_platform.dto.QuizResultDto;
 import kg.attractor.online_quiz_platform.exception.InvalidQuizAnswerException;
+import kg.attractor.online_quiz_platform.exception.QuizAlreadyAnsweredException;
 import kg.attractor.online_quiz_platform.exception.QuizNotFoundException;
 import kg.attractor.online_quiz_platform.exception.UserAlreadyRatedQuizException;
 import kg.attractor.online_quiz_platform.exception.UserNotFoundException;
@@ -43,11 +46,11 @@ public class QuizServiceImpl implements QuizService {
 
 
     @Override
-    public List<QuizOnlyWithQuestionsNumberDto> getQuizzes() {
+    public List<MicroQuizDto> getQuizzes() {
         List<Quiz> quizzes = quizDao.getQuizzes();
-        List<QuizOnlyWithQuestionsNumberDto> dtos = new ArrayList<>();
+        List<MicroQuizDto> dtos = new ArrayList<>();
         quizzes.forEach(quiz -> dtos.add(
-                QuizOnlyWithQuestionsNumberDto.builder()
+                MicroQuizDto.builder()
                         .id(quiz.getId())
                         .title(quiz.getTitle())
                         .countQuestions(questionService.getQuestionsByQuizId(quiz.getId()).size())
@@ -65,22 +68,57 @@ public class QuizServiceImpl implements QuizService {
     public QuizDto getQuizById(long id) {
         Optional<Quiz> quiz = quizDao.getQuizById(id);
         if (quiz.isPresent()) {
-//            List<Question> questionsByQuizId = questionDao.getQuestionsByQuizId(quiz.get().getId());
-            List<Question> questionsByQuizId = questionService.getQuestionsByQuizId(quiz.get().getId()).stream().map(QuestionMapper::fromDto).toList();
-
+            List<Question> questionsByQuizId = questionService.getQuestionsByQuizId(
+                            quiz.get().getId())
+                    .stream()
+                    .map(QuestionMapper::fromDto)
+                    .toList();
             quiz.get().setQuestions(questionsByQuizId);
-            System.out.println();
             return QuizMapper.toDto(quiz.get());
         } else {
             throw new QuizNotFoundException(String.format("Quiz with id %s not found", id));
         }
+    }
 
+    @Override
+    public MiniQuizDto getMiniQuizById(long quizId) {
+        Optional<Quiz> quiz = quizDao.getQuizById(quizId);
+        if (quiz.isPresent()) {
+            List<Question> questionsByQuizId = questionService.getQuestionsByQuizId(quiz.get().getId())
+                    .stream()
+                    .map(QuestionMapper::fromDto)
+                    .toList();
+
+            quiz.get().setQuestions(questionsByQuizId);
+            MiniQuizDto miniQuizDto = QuizMapper.toMiniDto(quiz.get());
+
+            List<MiniQuestionDto> miniQuestionDtos = questionService.getQuestionsByQuizId(
+                            quiz.get().getId()
+                    )
+                    .stream()
+                    .map(QuestionMapper::fromDto)
+                    .map(QuestionMapper::toMiniDto)
+                    .toList();
+
+            miniQuizDto.setQuestions(miniQuestionDtos);
+            return miniQuizDto;
+        } else {
+            throw new QuizNotFoundException(String.format("Quiz with id %s not found", quizId));
+        }
     }
 
     @Override
     public void saveQuizAnswer(QuizAnswerDto quizAnswerDto) {
         // check if quiz and user exists
         checkIfQuizAndUserExist(quizAnswerDto.getQuizId(), quizAnswerDto.getUserId());
+
+        if (quizDao.findIfUserAnsweredQuiz(quizAnswerDto.getUserId(), quizAnswerDto.getQuizId()).isPresent()) {
+            log.error("user with id {} already answered quiz with id {}", quizAnswerDto.getUserId(), quizAnswerDto.getQuizId());
+            throw new QuizAlreadyAnsweredException(
+                    String.format("user with id %d already answered quiz with id %d",
+                            quizAnswerDto.getUserId(), quizAnswerDto.getQuizId())
+            );
+        }
 
         // Validate the number of answers
         int numberOfQuestions = quizDao.countQuestionsByQuizId(quizAnswerDto.getQuizId());
@@ -91,6 +129,7 @@ public class QuizServiceImpl implements QuizService {
             );
             throw new InvalidQuizAnswerException("The number of answers does not match the number of questionsNumber in the quiz");
         }
+
 
         // Save each answer
         quizAnswerDto.getAnswers().forEach((questionId, optionId) -> {

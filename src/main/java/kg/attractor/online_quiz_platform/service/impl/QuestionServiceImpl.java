@@ -21,7 +21,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<QuestionDto> getQuestions() {
-        List<kg.attractor.online_quiz_platform.model.Question> questions = questionDao.getQuestions();
+        List<Question> questions = questionDao.getQuestions();
         List<QuestionDto> dtos = new ArrayList<>();
         questions.forEach(question ->
                 dtos.add(QuestionDto.builder()
@@ -36,10 +36,10 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<QuestionDto> getQuestionsByQuizId(long id) {
-        List<Question> fullQuestions = questionDao.getQuestionsByQuizId(id);
-        List<QuestionDto> dtos = new ArrayList<>();
-        fullQuestions.forEach(questionWithOptions ->
-                dtos.add(QuestionDto.builder()
+        List<Question> questions = questionDao.getQuestionsByQuizId(id);
+        List<QuestionDto> questionDtos = new ArrayList<>();
+        questions.forEach(questionWithOptions ->
+                questionDtos.add(QuestionDto.builder()
                         .id(questionWithOptions.getId())
                         .quizId(questionWithOptions.getQuizId())
                         .questionText(questionWithOptions.getQuestionText())
@@ -47,7 +47,7 @@ public class QuestionServiceImpl implements QuestionService {
                         .build()
                 )
         );
-        return dtos;
+        return questionDtos;
     }
 
     @Override

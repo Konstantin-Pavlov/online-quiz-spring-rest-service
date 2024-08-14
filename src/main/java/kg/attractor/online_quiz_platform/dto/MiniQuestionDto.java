@@ -5,12 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class QuizOnlyWithQuestionsNumberDto {
+public class MiniQuestionDto {
     private Long id;
     private String title;
-    int countQuestions;
+    private List<MiniOptionDto> options;
 }

@@ -7,6 +7,7 @@ import kg.attractor.online_quiz_platform.exception.QuizAlreadyExistsException;
 import kg.attractor.online_quiz_platform.service.ErrorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
@@ -26,28 +27,32 @@ public class ErrorServiceImpl implements ErrorService {
     public ErrorResponseBody makeResponse(Exception exception) {
         log.error(exception.getMessage());
 //        exception.printStackTrace();
-        if (exception instanceof QuizAlreadyExistsException) {
-            return ErrorResponseBody.builder()
+        return switch (exception) {
+            case QuizAlreadyExistsException quizAlreadyExistsException -> ErrorResponseBody.builder()
                     .title("Quiz Already Exists")
                     .reasons(Map.of("error", List.of(exception.getMessage())))
                     .build();
-        }
-        if (exception instanceof EmailAlreadyExistsException) {
-            return ErrorResponseBody.builder()
+            case EmailAlreadyExistsException emailAlreadyExistsException -> ErrorResponseBody.builder()
                     .title("Email Already Exists")
                     .reasons(Map.of("error", List.of(exception.getMessage())))
                     .build();
-        }        if (exception instanceof SQLSyntaxErrorException) {
-            return ErrorResponseBody.builder()
+            case SQLSyntaxErrorException throwables -> ErrorResponseBody.builder()
                     .title("Database Syntax Error")
                     .reasons(Map.of("error", List.of(exception.getMessage())))
                     .build();
-        }
-        // Handle other exceptions as needed
-        return ErrorResponseBody.builder()
-                .title("Error")
-                .reasons(Map.of("error", List.of(exception.getMessage())))
-                .build();
+            case DuplicateKeyException duplicateKeyException -> ErrorResponseBody.builder()
+                    .title("Duplicate Entry Error")
+                    .reasons(Map.of("error", List.of("A record with the same key already exists in the database. Please check your input and try again.")))
+                    .build();
+            default ->
+
+                // Handle other exceptions as needed
+                    ErrorResponseBody.builder()
+                            .title("Error")
+                            .reasons(Map.of("error", List.of(exception.getMessage())))
+                            .build();
+        };
+
     }
 
     @Override

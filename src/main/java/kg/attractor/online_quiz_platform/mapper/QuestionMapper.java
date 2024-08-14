@@ -1,10 +1,11 @@
 package kg.attractor.online_quiz_platform.mapper;
 
+import kg.attractor.online_quiz_platform.dto.MiniOptionDto;
+import kg.attractor.online_quiz_platform.dto.MiniQuestionDto;
 import kg.attractor.online_quiz_platform.dto.OptionDto;
 import kg.attractor.online_quiz_platform.dto.QuestionDto;
 import kg.attractor.online_quiz_platform.model.Option;
 import kg.attractor.online_quiz_platform.model.Question;
-
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +26,22 @@ public class QuestionMapper {
                 .quizId(question.getQuizId())
                 .questionText(question.getQuestionText())
                 .options(optionsDto)
+                .build();
+    }
+
+    public static MiniQuestionDto toMiniDto(Question question) {
+        if (question == null) {
+            return null;
+        }
+
+        List<MiniOptionDto> miniOptionDtos = question.getOptions().stream()
+                .map(OptionMapper::toMiniDto)
+                .toList();
+
+        return MiniQuestionDto.builder()
+                .id(question.getId())
+                .title(question.getQuestionText())
+                .options(miniOptionDtos)
                 .build();
     }
 

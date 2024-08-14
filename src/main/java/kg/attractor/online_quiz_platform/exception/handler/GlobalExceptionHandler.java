@@ -11,6 +11,7 @@ import kg.attractor.online_quiz_platform.exception.UserNotFoundException;
 import kg.attractor.online_quiz_platform.service.ErrorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -73,4 +74,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseBody> handleJdbcSQLIntegrityConstraintViolation(UserAlreadyRatedQuizException exception) {
         return new ResponseEntity<>(errorService.makeResponse(exception), HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(DuplicateKeyException.class)
+    public ResponseEntity<ErrorResponseBody> handleJdbcSQLIntegrityConstraintViolation(DuplicateKeyException exception) {
+        return new ResponseEntity<>(errorService.makeResponse(exception), HttpStatus.CONFLICT);
+    }
+
 }

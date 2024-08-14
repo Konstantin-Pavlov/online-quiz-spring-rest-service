@@ -1,11 +1,12 @@
 package kg.attractor.online_quiz_platform.mapper;
 
+import kg.attractor.online_quiz_platform.dto.MiniQuestionDto;
+import kg.attractor.online_quiz_platform.dto.MiniQuizDto;
 import kg.attractor.online_quiz_platform.dto.QuestionDto;
 import kg.attractor.online_quiz_platform.dto.QuizDto;
 import kg.attractor.online_quiz_platform.model.Quiz;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class QuizMapper {
 
@@ -16,7 +17,7 @@ public class QuizMapper {
 
         List<QuestionDto> questionsDto = quiz.getQuestions().stream()
                 .map(QuestionMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
 
         return QuizDto.builder()
                 .id(quiz.getId())
@@ -24,6 +25,22 @@ public class QuizMapper {
                 .description(quiz.getDescription())
                 .creatorId(quiz.getCreatorId())
                 .questions(questionsDto)
+                .build();
+    }
+
+    public static MiniQuizDto toMiniDto(Quiz quiz) {
+        if (quiz == null) {
+            return null;
+        }
+        List<MiniQuestionDto> miniQuestionDtos = quiz.getQuestions().stream()
+                .map(QuestionMapper::toMiniDto)
+                .toList();
+
+        return MiniQuizDto.builder()
+                .id(quiz.getId())
+                .title(quiz.getTitle())
+                .creatorId(quiz.getCreatorId())
+                .questions(miniQuestionDtos)
                 .build();
     }
 }

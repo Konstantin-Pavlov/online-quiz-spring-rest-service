@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface QuestionService {
     List<QuestionDto> getQuestions();
+
     List<QuestionDto> getQuestionsByQuizId(long id);
+
     void createQuestion(QuestionDto questionDto);
 }

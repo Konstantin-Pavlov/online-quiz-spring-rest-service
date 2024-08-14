@@ -1,5 +1,6 @@
 package kg.attractor.online_quiz_platform.mapper;
 
+import kg.attractor.online_quiz_platform.dto.MiniOptionDto;
 import kg.attractor.online_quiz_platform.dto.OptionDto;
 import kg.attractor.online_quiz_platform.model.Option;
 
@@ -18,6 +19,16 @@ public class OptionMapper {
                 .build();
     }
 
+    public static MiniOptionDto toMiniDto(Option option) {
+        if (option == null) {
+            return null;
+        }
+        return MiniOptionDto.builder()
+                .id(option.getId())
+                .answerOption(option.getOptionText())
+                .build();
+    }
+
     public static Option fromDto(OptionDto optionDto) {
         if (optionDto == null) {
             return null;
@@ -29,5 +40,6 @@ public class OptionMapper {
                 .optionText(optionDto.getOptionText())
                 .correct(optionDto.isCorrect())
                 .build();
+
     }
 }
